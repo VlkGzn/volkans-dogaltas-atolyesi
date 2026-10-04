@@ -1,0 +1,53 @@
+{
+ "skill_name": "atolyekart-standartlari",
+ "evals": [
+  {
+   "id": 1,
+   "name": "favori-dugmesi",
+   "prompt": "Ürün kartlarına bir favorilere ekle (kalp) düğmesi koy. Müşteri beğendiği ürünleri işaretleyebilsin, sayfayı kapatıp açınca da hatırlansın.",
+   "expected_output": "ProductCard genişletilir (yeni kart bileşeni yazılmaz), stil styles.css'te, button + aria-label, localStorage try/catch, build geçer",
+   "files": [],
+   "assertions": [
+    "Site derleniyor (npm run build hatasız)",
+    "Favori düğmesi mevcut ProductCard.jsx genişletilerek eklendi",
+    "İkinci bir kart bileşeni yazılmadı",
+    "Stil styles.css içinde",
+    "Kalp düğmesi <button> ve aria-label ile",
+    "localStorage try/catch ile korunuyor",
+    "Eklenen kodda \"Tespih\" yazımı yok"
+   ]
+  },
+  {
+   "id": 2,
+   "name": "bileklik-webhook",
+   "prompt": "Müşteri sitede kendi bilekliğini tasarlayıp WhatsApp'tan sipariş ver'e basınca bu bilgi Make'teki webhook'uma da gitsin, ben de Google Sheets'te görebileyim. Webhook adresimi sonra vereceğim.",
+   "expected_output": "src/lib/webhook.js tek yardımcı, AtölyeKart v1 zarfı ve bileklik.tasarlandi olayı, VITE_WEBHOOK_URL, sendBeacon, sır yok, WhatsApp'a geçişi engellemez, kullanıcıya adımlar",
+   "files": [],
+   "assertions": [
+    "Site derleniyor (npm run build hatasız)",
+    "Gönderim tek yardımcı dosyada: src/lib/webhook.js",
+    "Örnek mesaj AtölyeKart v1 doğrulayıcısından geçiyor",
+    "Olay adı \"bileklik.tasarlandi\"",
+    "Webhook adresi VITE_WEBHOOK_URL ortam değişkeninden okunuyor",
+    "Koda webhook adresi veya sır gömülmedi",
+    "WhatsApp geçişi engellenmiyor (preventDefault yok, sendBeacon/keepalive var)"
+   ]
+  },
+  {
+   "id": 3,
+   "name": "tablodan-urun-guncelleme",
+   "prompt": "Google Sheets'ten şu değişiklikler gelecek: Sitrin Tespih'in açıklaması 'El yapımı gümüş püskül' olsun ve yeni ürünlerde öne çıksın; Ametist Bileklik satıldı, siteden kalksın. Bunlar için webhook JSON örneklerini hazırla ve değişiklikleri siteye uygula.",
+   "expected_output": "urun.guncellendi + urun.kaldirildi JSON'ları zarf formatında ve doğrulayıcıdan geçer, Tesbih yazımı, değişiklik yalnız urunler.js'te, build geçer",
+   "files": [],
+   "assertions": [
+    "Webhook JSON örnekleri doğrulayıcıdan geçiyor (zarf, alanlar, Tesbih yazımı, ürün kimlikleri)",
+    "urun.guncellendi (sitrin-tesbih) ve urun.kaldirildi (ametist-bileklik) olayları var",
+    "Sitedeki değişiklik yalnız src/data/urunler.js içinde",
+    "Sitrin Tesbih açıklaması güncellendi ve yeni: true",
+    "Ametist Bileklik ürün listesinden kaldırıldı",
+    "Ametist fotoğraf dosyası silinmedi",
+    "Site derleniyor (npm run build hatasız)"
+   ]
+  }
+ ]
+}

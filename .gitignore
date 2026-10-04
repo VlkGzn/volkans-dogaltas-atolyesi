@@ -1,0 +1,16 @@
+# Bağımlılıklar ve derleme çıktısı (npm install / npm run build ile yeniden oluşur)
+node_modules/
+web-sitesi/dist/
+
+# Ayarlar (webhook adresi, Supabase bilgileri) — örnek: web-sitesi/.env.example
+.env
+web-sitesi/.env
+
+# Kaynak ekran görüntüleri (sitedeki kopyaları web-sitesi/public/img/koleksiyon/ içinde)
+Screenshot *.png
+
+# Başka bir firmaya (ŞİFAMTAŞ) ait görseller içeren gelen kutusu — yayınlanmaz
+yeni-resimler/
+
+# macOS
+.DS_Store
