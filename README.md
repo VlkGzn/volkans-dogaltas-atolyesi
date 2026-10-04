@@ -3,6 +3,8 @@
 Erkek ve kadınlar için el yapımı doğal taş **tesbih, bileklik, kolye ve yüzük** üreten atölyenin web sitesi, logosu ve sosyal medya görselleri.
 Site **React 19 + Vite** ile yazılmıştır; siparişler WhatsApp üzerinden alınır.
 
+**🌐 Canlı site:** https://vlkgzn.github.io/volkans-dogaltas-atolyesi/
+
 ## Özellikler
 
 - **Animasyonlu giriş:** Erkek (tesbih videosu ↔ eldeki yüzük) ve Kadın (kolyeler ↔ yüzük) kartları sırayla, yakınlaşarak değişir.
@@ -52,6 +54,11 @@ araclar/                    Python yardımcıları: tesbih animasyonu, logo, QR,
 .claude/skills/             Proje skill'i: bileşen standartları + webhook formatı (doğrulama betiğiyle)
 CLAUDE.md                   Projenin kuralları ve ayrıntılı notları
 ```
+
+## Yayınlama (GitHub Pages)
+
+Site `gh-pages` dalından yayınlanır. Değişiklikten sonra `web-sitesi` klasöründe `npm run build`, ardından
+`dist/` içeriği (+ boş `.nojekyll` dosyası) `gh-pages` dalına gönderilir.
 
 ## Notlar
 

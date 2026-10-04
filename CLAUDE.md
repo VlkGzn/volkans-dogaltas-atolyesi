@@ -160,6 +160,14 @@ negatif `animation-delay` ile sabitle. Pencere ~500px'ten dar açılmadığı i�
 - Sahte Supabase sunucusuyla uçtan uca test edildi (üye ol, KVKK zorunlu, yanlış şifre, giriş, çıkış).
 - Sonraki aşama (bekliyor): favori + sepetin üyeye bağlı senkronu (Supabase tabloları + RLS).
 
+## GitHub ve canlı site
+- Repo: https://github.com/VlkGzn/volkans-dogaltas-atolyesi (public, `main`). Canlı site (GitHub Pages, `gh-pages` dalı):
+  https://vlkgzn.github.io/volkans-dogaltas-atolyesi/
+- Siteyi güncelleme: `npm run build` → `dist/` kopyasını (+ `.nojekyll`) ayrı bir klasörde `gh-pages` dalı olarak commit'leyip
+  `git push -f origin gh-pages`; kaynak değişikliklerini ayrıca `main`'e commit'le. (gh token'ında `workflow` izni yok →
+  GitHub Actions ile otomatik yayın için kullanıcı `gh auth refresh -s workflow` yapmalı.)
+- Claude önizlemesi (UDY4…) yalnız kullanıcıya açık; herkese açık adres GitHub Pages.
+
 ## Araçlar
 
 - `ffmpeg` sistemde yok; `pip3 install --user imageio-ffmpeg` ile gelen ikili kullanılıyor
