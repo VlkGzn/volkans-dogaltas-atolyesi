@@ -1,12 +1,18 @@
 // Sepet: [{ id, adet }] — müşterinin tarayıcısında saklanır; sipariş WhatsApp'tan gönderilir (online ödeme yok).
 import { useCallback, useEffect, useState } from 'react';
+import { URUNLER } from '../data/urunler.js';
 
 const ANAHTAR = 'volkans-dogaltas:sepet';
+export const MAKS_ADET = 99;
+
+// Depodan gelen veri elle değiştirilmiş olabilir: yalnız listedeki ürünler ve 1–99 arası tam sayı adet kabul edilir.
+const gecerliMi = (k) =>
+  k && URUNLER.some((u) => u.id === k.id) && Number.isInteger(k.adet) && k.adet >= 1 && k.adet <= MAKS_ADET;
 
 const oku = () => {
   try {
     const v = JSON.parse(localStorage.getItem(ANAHTAR) || '[]');
-    return Array.isArray(v) ? v.filter((k) => k && typeof k.id === 'string' && k.adet > 0) : [];
+    return Array.isArray(v) ? v.filter(gecerliMi) : [];
   } catch {
     return [];
   }
@@ -28,8 +34,8 @@ export function useSepet() {
   const adetDegistir = useCallback((id, fark) => {
     setKalemler((s) => {
       const var_ = s.find((k) => k.id === id);
-      if (!var_) return fark > 0 ? [...s, { id, adet: fark }] : s;
-      return s.map((k) => (k.id === id ? { ...k, adet: k.adet + fark } : k)).filter((k) => k.adet > 0);
+      if (!var_) return fark > 0 ? [...s, { id, adet: Math.min(fark, MAKS_ADET) }] : s;
+      return s.map((k) => (k.id === id ? { ...k, adet: Math.min(k.adet + fark, MAKS_ADET) } : k)).filter((k) => k.adet > 0);
     });
   }, []);
 

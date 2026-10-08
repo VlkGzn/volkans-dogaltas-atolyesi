@@ -95,6 +95,7 @@ araclar/
   qr_logolu.py                   Ortasında logo olan QR üreticisi (segno)
   logo_secenekleri.py            4 logo konseptinin SVG üreticisi
   tesbih_animasyonu.py           Tesbih çekilme videosunu üreten betik (kullanım içinde yazılı)
+  guvenlik_testi.py              CSP/XSS/sepet güvenlik testi (headless Chrome; bkz. GUVENLIK.md)
 ```
 
 ## Tasarım kartı (Claude artifact)
@@ -137,6 +138,15 @@ Kontrol için: `npm run build`, sonra `"/Applications/Google Chrome.app/Contents
 Etkileşim testi: dist/index.html'in kopyasına tıklama yapan bir <script> ekleyip `--dump-dom` ile sonucu document.title'dan oku.
 Headless Chrome CSS animasyonlarını güvenilir ilerletmez; bir anı görmek için animasyonu `animation-play-state:paused` +
 negatif `animation-delay` ile sabitle. Pencere ~500px'ten dar açılmadığı için telefon görünümü bu yolla doğrulanamaz.
+
+## Güvenlik
+
+`GUVENLIK.md` (proje kökü) — tek güvenlik denetim dosyası: sızıntı, XSS/injection, bağımlılık, canlı site başlıkları, bulgular
+ve testleri tekrar çalıştırma adımları. Son denetim 2026-10-08 (`c0a916e`). Her commit/yayından önce oradaki taramayı çalıştır,
+sonuçları aynı dosyada güncelle. Test betiği `araclar/guvenlik_testi.py`.
+CSP: `vite.config.js` → `guvenlikPolitikasi` derlemede dist/index.html'e meta ekler (JS özeti + .env'deki Supabase/webhook adresleri).
+Siteye yeni dış kaynak (analiz, harita, font) eklenirse CSP'ye de ekle. Sepet/favori depodan okurken doğrulanır (sepet: 1–99 adet).
+Açık bulgular: çerçeveleme koruması yok (GitHub Pages), webhook/Supabase kurulum şartları.
 
 ## Skill
 

@@ -1,12 +1,14 @@
 // Favoriler: müşterinin kalp ile işaretlediği ürünler, kendi tarayıcısında saklanır (sunucuya gitmez).
 import { useCallback, useEffect, useState } from 'react';
+import { URUNLER } from '../data/urunler.js';
 
 const ANAHTAR = 'volkans-dogaltas:favoriler';
 
 const oku = () => {
   try {
     const v = JSON.parse(localStorage.getItem(ANAHTAR) || '[]');
-    return Array.isArray(v) ? v : [];
+    // yalnız listedeki ürün kimlikleri (depo elle değiştirilmiş olabilir)
+    return Array.isArray(v) ? v.filter((id) => URUNLER.some((u) => u.id === id)) : [];
   } catch {
     return []; // gizli pencere / engelli depolama: favoriler yalnız bu ziyarette tutulur
   }
