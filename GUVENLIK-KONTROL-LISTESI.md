@@ -51,11 +51,11 @@ Tarih: 17 Ekim 2026 · Hafta 2 · Şablon: Ders 3 `GUVENLIK-KONTROL-LISTESI.md` 
 
 ## Deploy sonrası
 
-- [ ] Canlı URL'de iki form denendi, webhook alıcısında iki event göründü — **henüz yapılmadı:** `WEBHOOK_URL` yok ve son kod henüz canlıya alınmadı. Yerelde tarayıcıyla (yerel alıcı) iki event göründü
-- [ ] 11 istek arka arkaya gönderilip 429 alındığı canlıda doğrulandı — yerelde doğrulandı (11. istek 429); canlıda bekliyor
-- [ ] Geçersiz e-posta ile 400 ve alan hatası canlıda doğrulandı — yerelde: `a@b` formda uyarı alır, sunucuya doğrudan gelirse 400
+- [ ] Canlı URL'de iki form tarayıcıdan denendi, webhook alıcısında iki event göründü — **açık:** `WEBHOOK_URL` yok. Canlı API ucu doğrulandı: stok 204, sipariş JWT'siz 401, JWT'li 204, tükenen/yanlış ürün 400. Yerelde tarayıcıyla (yerel alıcı) iki event göründü
+- [x] 11 istek arka arkaya gönderilip 429 alındığı canlıda doğrulandı (17 Ekim 2026: 12 ardışık istek → 429 + `retry-after`)
+- [x] Geçersiz e-posta (`a@b`) canlıda 400 döndü; formda alan uyarısı da var (yerel tarayıcı testi)
 - [ ] Expo Go ile telefondan iki form denendi — mobil port hazır (`expo/`), paket iOS+Android için derlendi, API istemcisi 12 testle doğrulandı; telefonda deneme kullanıcıda (önce son kodun canlıya alınması gerekir)
 
 ## Özet
 - Hazır: secret yönetimi, sunucu doğrulaması, JWT, hız sınırı, KVKK rızası, görsel haklarının düzeltilmesi.
-- Açık (öncelik sırasıyla): ① son kodu canlıya al + canlı testler ② Vercel'e `WEBHOOK_URL` ③ Preview için ayrı secret ④ görsellerin git geçmişi kararı ⑤ hukukçu kontrolü ⑥ kalıcı rate limit (Upstash)
+- Açık (öncelik sırasıyla): ① (canlıya alındı, API testleri yapıldı) tarayıcıdan canlı form denemesi ② Vercel'e `WEBHOOK_URL` ③ Preview için ayrı secret ④ görsellerin git geçmişi kararı ⑤ hukukçu kontrolü ⑥ kalıcı rate limit (Upstash)
