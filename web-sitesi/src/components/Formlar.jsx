@@ -12,10 +12,10 @@ const EPOSTA = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Sipariş ver (ad, ürün, telefon) ve Stok bildirimi iste (ad, e-posta, tükenen ürün).
 // İkisi de ekranda onay gösterir ve webhook'a (/api/webhook) olay gönderir.
-export default function Formlar() {
-  const [siparis, setSiparis] = useState({ ad: '', urun: ilk(STOKTA), telefon: '' });
+export default function Formlar({ onGizlilik }) {
+  const [siparis, setSiparis] = useState({ ad: '', urun: ilk(STOKTA), telefon: '', riza: false });
   const [siparisDurum, setSiparisDurum] = useState({ hata: '', tamam: '', bekliyor: false });
-  const [stok, setStok] = useState({ ad: '', urun: ilk(TUKENEN), eposta: '' });
+  const [stok, setStok] = useState({ ad: '', urun: ilk(TUKENEN), eposta: '', riza: false });
   const [stokDurum, setStokDurum] = useState({ hata: '', tamam: '' });
 
   // Tükenen ürün kartındaki "Stok bildirimi iste" düğmesi ürünü bu forma seçtirir.
@@ -27,6 +27,10 @@ export default function Formlar() {
 
   const siparisYolla = async (e) => {
     e.preventDefault();
+    if (!siparis.riza) {
+      setSiparisDurum({ hata: 'Göndermek için açık rıza kutusunu işaretlemeniz gerekir.', tamam: '', bekliyor: false });
+      return;
+    }
     if (!TELEFON.test(siparis.telefon.trim()) || telefonRakamlari(siparis.telefon).length < 10) {
       setSiparisDurum({ hata: 'Telefonu yalnız rakamla, alan koduyla yazın (ör. 0532 000 00 00).', tamam: '' });
       return;
@@ -38,11 +42,15 @@ export default function Formlar() {
       return;
     }
     setSiparisDurum({ hata: '', bekliyor: false, tamam: `Teşekkürler ${siparis.ad.trim()}! "${urun.ad}" siparişin alındı; seni telefonla arayıp ödeme ve teslimatı netleştireceğiz.` });
-    setSiparis({ ad: '', urun: ilk(STOKTA), telefon: '' });
+    setSiparis({ ad: '', urun: ilk(STOKTA), telefon: '', riza: false });
   };
 
   const stokGonder = (e) => {
     e.preventDefault();
+    if (!stok.riza) {
+      setStokDurum({ hata: 'Göndermek için açık rıza kutusunu işaretlemeniz gerekir.', tamam: '' });
+      return;
+    }
     if (!EPOSTA.test(stok.eposta.trim())) {
       setStokDurum({ hata: 'E-posta adresini tam yazın (ör. ad@ornek.com).', tamam: '' });
       return;
@@ -50,10 +58,17 @@ export default function Formlar() {
     const urun = URUNLER.find((u) => u.id === stok.urun);
     webhookGonder('stok.bildirimi_istendi', stokVerisi(stok, urun));
     setStokDurum({ hata: '', tamam: `Teşekkürler ${stok.ad.trim()}! "${urun.ad}" tekrar stoğa girdiğinde ${stok.eposta.trim()} adresine haber vereceğiz.` });
-    setStok({ ad: '', urun: ilk(TUKENEN), eposta: '' });
+    setStok({ ad: '', urun: ilk(TUKENEN), eposta: '', riza: false });
   };
 
-  const degis = (set, alan) => (e) => set((f) => ({ ...f, [alan]: e.target.value }));
+  const degis = (set, alan) => (e) => set((f) => ({ ...f, [alan]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+
+  const riza = (form, set, veri) => (
+    <label className="onay">
+      <input type="checkbox" required checked={form.riza} onChange={degis(set, 'riza')} />
+      <span><button type="button" className="metin-link" onClick={onGizlilik}>Gizlilik Politikası ve Aydınlatma Metni</button>'ni okudum; {veri} bu talebi yanıtlamak için işlenmesine açık rızam var.</span>
+    </label>
+  );
   const sifirla = (set) => () => set((d) => ({ ...d, hata: '', tamam: '' }));
 
   return (
@@ -76,6 +91,7 @@ export default function Formlar() {
           <label className="alan">Telefon
             <input type="tel" required maxLength={20} autoComplete="tel" inputMode="tel" placeholder="05xx xxx xx xx" value={siparis.telefon} onChange={degis(setSiparis, 'telefon')} />
           </label>
+          {riza(siparis, setSiparis, 'adım ve telefon numaramın')}
           {siparisDurum.hata && <p className="uyelik__hata" role="alert">{siparisDurum.hata}</p>}
           {siparisDurum.tamam && <p className="uyelik__tamam" role="status">{siparisDurum.tamam}</p>}
           <button type="submit" className="btn btn--gold btn--big" disabled={siparisDurum.bekliyor}>{siparisDurum.bekliyor ? 'Gönderiliyor…' : 'Siparişi gönder'}</button>
@@ -95,6 +111,7 @@ export default function Formlar() {
             <label className="alan">E-posta
               <input type="email" required maxLength={120} autoComplete="email" value={stok.eposta} onChange={degis(setStok, 'eposta')} />
             </label>
+            {riza(stok, setStok, 'adım ve e-posta adresimin')}
             {stokDurum.hata && <p className="uyelik__hata" role="alert">{stokDurum.hata}</p>}
             {stokDurum.tamam && <p className="uyelik__tamam" role="status">{stokDurum.tamam}</p>}
             <button type="submit" className="btn btn--gold btn--big">Haber ver</button>

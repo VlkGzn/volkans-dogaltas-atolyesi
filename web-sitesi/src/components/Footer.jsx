@@ -2,7 +2,7 @@ import Logo from './Logo.jsx';
 import { FacebookLogo, InstagramLogo, XLogo } from './Icons.jsx';
 import { ILETISIM, waLink } from '../data/site.js';
 
-export default function Footer({ onFiltre }) {
+export default function Footer({ onFiltre, onGizlilik }) {
   const dis = { target: '_blank', rel: 'noopener' };
   return (
     <footer className="footer">
@@ -39,7 +39,7 @@ export default function Footer({ onFiltre }) {
           <div className="footer__note">Telefonunun kamerasıyla okut,<br />WhatsApp'tan doğrudan yaz.</div>
         </div>
       </div>
-      <div className="container footer__bottom">© 2026 Volkan's Doğaltaş Atölyesi</div>
+      <div className="container footer__bottom">© 2026 Volkan's Doğaltaş Atölyesi · <button type="button" className="metin-link" onClick={onGizlilik}>Gizlilik Politikası</button></div>
     </footer>
   );
 }

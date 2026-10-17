@@ -2,6 +2,7 @@
 // Tarayıcı yalnız kendi sitesindeki /api/webhook'a yazar (web-sitesi/api/webhook.js); gerçek adres ve sır sunucuda kalır.
 // Sunucuda WEBHOOK_URL tanımlı değilse hiçbir yere veri gitmez.
 // Webhook hatası müşterinin WhatsApp'a geçmesini asla engellemez.
+import { GIZLILIK_SURUMU } from '../data/gizlilik.js';
 import { FIYAT, taneOzeti, tl, urunFiyatSayi, urunFiyati, urunMesaji } from '../data/site.js';
 
 const ADRES = '/api/webhook';
@@ -90,6 +91,9 @@ export const sepetVerisi = (satirlar, toplam, mesaj) => ({
   mesaj,
 });
 
+// Açık rıza kaydı: forma kutu işaretlenmeden gönderilemez; hangi metin sürümüne rıza verildiği saklanır.
+const rizaKaydi = () => ({ riza: true, riza_zamani: turkiyeZamani(), riza_metni: GIZLILIK_SURUMU });
+
 // form: { ad, telefon } — urun: urunler.js kaydı
 export const siparisVerisi = (form, urun) => ({
   musteri_adi: form.ad.trim(),
@@ -99,6 +103,7 @@ export const siparisVerisi = (form, urun) => ({
   kategori: urun.kategori,
   cinsiyet: urun.cinsiyet,
   fiyat_metni: urunFiyati(urun),
+  ...rizaKaydi(),
   kanal: 'form',
 });
 
@@ -110,5 +115,6 @@ export const stokVerisi = (form, urun) => ({
   urun_adi: urun.ad,
   kategori: urun.kategori,
   cinsiyet: urun.cinsiyet,
+  ...rizaKaydi(),
   kanal: 'form',
 });

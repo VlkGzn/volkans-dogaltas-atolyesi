@@ -7,6 +7,7 @@ import Koleksiyon from './components/Koleksiyon.jsx';
 import BileklikTasarla from './components/BileklikTasarla.jsx';
 import AtolyedenYeni from './components/AtolyedenYeni.jsx';
 import Formlar from './components/Formlar.jsx';
+import GizlilikPenceresi from './components/GizlilikPenceresi.jsx';
 import Footer from './components/Footer.jsx';
 import Lightbox from './components/Lightbox.jsx';
 import { useFavoriler } from './lib/favoriler.js';
@@ -31,6 +32,9 @@ export default function App() {
   const uyelik = useUyelik();
   const [uyelikPencere, setUyelikPencere] = useState(null);
   const uyelikKapat = useCallback(() => setUyelikPencere(null), []);
+  // Gizlilik Politikası: formlardaki rıza kutusu ve alt bilgi bağlantısı açar.
+  const [gizlilikAcik, setGizlilikAcik] = useState(false);
+  const gizlilikKapat = useCallback(() => setGizlilikAcik(false), []);
 
   return (
     <div className="page">
@@ -42,10 +46,11 @@ export default function App() {
       <Koleksiyon filtre={filtre} setFiltre={setFiltre} onOpen={setAcikUrun} favoriler={favoriler} onFavori={favoriDegistir} onSepeteEkle={sepet.ekle} />
       <BileklikTasarla />
       <AtolyedenYeni onOpen={setAcikUrun} onTumu={() => setFiltre('tumu')} favoriler={favoriler} onFavori={favoriDegistir} onSepeteEkle={sepet.ekle} />
-      <Formlar />
-      <Footer onFiltre={setFiltre} />
+      <Formlar onGizlilik={() => setGizlilikAcik(true)} />
+      <Footer onFiltre={setFiltre} onGizlilik={() => setGizlilikAcik(true)} />
       {acikUrun && <Lightbox key={acikUrun.id} urun={acikUrun} onClose={kapat} onSepeteEkle={sepet.ekle} />}
       {sepetAcik && <Sepet sepet={sepet} onClose={sepetiKapat} />}
+      {gizlilikAcik && <GizlilikPenceresi onClose={gizlilikKapat} />}
       {uyelikPencere && <Uyelik key={uyelikPencere} uyelik={uyelik} baslangic={uyelikPencere} onClose={uyelikKapat} />}
     </div>
   );

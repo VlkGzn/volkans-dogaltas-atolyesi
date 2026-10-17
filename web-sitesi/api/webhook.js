@@ -9,10 +9,13 @@ const EPOSTA = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const metin = (v, en) => typeof v === 'string' && v.trim().length > 0 && v.length <= en;
 
 // Form olaylarında kişi bilgisi sunucuda da doğrulanır (tarayıcı denetimi tek başına yetmez).
+// Kişi bilgisi içeren iki form olayı açık rıza kaydı olmadan kabul edilmez.
+const rizaVar = (v) => v.riza === true && metin(v.riza_metni, 40) && metin(v.riza_zamani, 40);
+
 function formGecerli(o) {
   const v = o.veri;
-  if (o.olay === 'siparis.verildi') return metin(v.musteri_adi, 80) && metin(v.urun_id, 80) && TELEFON.test(v.telefon ?? '');
-  if (o.olay === 'stok.bildirimi_istendi') return metin(v.musteri_adi, 80) && metin(v.urun_id, 80) && EPOSTA.test(v.eposta ?? '') && v.eposta.length <= 120;
+  if (o.olay === 'siparis.verildi') return metin(v.musteri_adi, 80) && metin(v.urun_id, 80) && TELEFON.test(v.telefon ?? '') && rizaVar(v);
+  if (o.olay === 'stok.bildirimi_istendi') return metin(v.musteri_adi, 80) && metin(v.urun_id, 80) && EPOSTA.test(v.eposta ?? '') && v.eposta.length <= 120 && rizaVar(v);
   return true;
 }
 const EN_FAZLA_BAYT = 20 * 1024;
