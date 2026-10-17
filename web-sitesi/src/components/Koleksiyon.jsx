@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import ProductList from './ProductList.jsx';
 import { URUNLER } from '../data/urunler.js';
 import { FILTRELER, filtreAdi, urunFiltredeMi } from '../data/site.js';
 
-// Klasördeki tüm ürünler; Kadın/Erkek/kategori süzgeciyle.
+// Klasördeki tüm ürünler; Kadın/Erkek/kategori süzgeci + "Yalnız stokta olanlar" anahtarı.
 export default function Koleksiyon({ filtre, setFiltre, onOpen, favoriler, onFavori, onSepeteEkle }) {
-  const gorunen = URUNLER.filter((u) => urunFiltredeMi(u, filtre));
+  const [yalnizStokta, setYalnizStokta] = useState(false);
+  const gorunen = URUNLER.filter((u) => urunFiltredeMi(u, filtre) && !(yalnizStokta && u.tukendi));
   return (
     <section id="koleksiyon" className="container section">
       <div className="section__head">
@@ -27,6 +29,10 @@ export default function Koleksiyon({ filtre, setFiltre, onOpen, favoriler, onFav
             {f.ad} <span className="chip__count">{URUNLER.filter((u) => urunFiltredeMi(u, f.id)).length}</span>
           </button>
         ))}
+        <button type="button" className={yalnizStokta ? 'chip chip--on' : 'chip'} aria-pressed={yalnizStokta}
+          onClick={() => setYalnizStokta((a) => !a)}>
+          Yalnız stokta olanlar
+        </button>
       </div>
       <ProductList urunler={gorunen} onOpen={onOpen} bolum="koleksiyon" favoriler={favoriler} onFavori={onFavori} onSepeteEkle={onSepeteEkle} />
     </section>
