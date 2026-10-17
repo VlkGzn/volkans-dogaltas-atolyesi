@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { URUNLER } from '../data/urunler.js';
-import { siparisVerisi, stokVerisi, webhookGonder } from '../lib/webhook.js';
+import { siparisGonder, siparisVerisi, stokVerisi, webhookGonder } from '../lib/webhook.js';
 
 const STOKTA = URUNLER.filter((u) => !u.tukendi);
 const TUKENEN = URUNLER.filter((u) => u.tukendi);
@@ -14,7 +14,7 @@ const EPOSTA = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // İkisi de ekranda onay gösterir ve webhook'a (/api/webhook) olay gönderir.
 export default function Formlar() {
   const [siparis, setSiparis] = useState({ ad: '', urun: ilk(STOKTA), telefon: '' });
-  const [siparisDurum, setSiparisDurum] = useState({ hata: '', tamam: '' });
+  const [siparisDurum, setSiparisDurum] = useState({ hata: '', tamam: '', bekliyor: false });
   const [stok, setStok] = useState({ ad: '', urun: ilk(TUKENEN), eposta: '' });
   const [stokDurum, setStokDurum] = useState({ hata: '', tamam: '' });
 
@@ -25,15 +25,19 @@ export default function Formlar() {
     return () => window.removeEventListener('stok-bildirimi-sec', sec);
   }, []);
 
-  const siparisGonder = (e) => {
+  const siparisYolla = async (e) => {
     e.preventDefault();
     if (!TELEFON.test(siparis.telefon.trim()) || telefonRakamlari(siparis.telefon).length < 10) {
       setSiparisDurum({ hata: 'Telefonu yalnız rakamla, alan koduyla yazın (ör. 0532 000 00 00).', tamam: '' });
       return;
     }
     const urun = URUNLER.find((u) => u.id === siparis.urun);
-    webhookGonder('siparis.verildi', siparisVerisi(siparis, urun));
-    setSiparisDurum({ hata: '', tamam: `Teşekkürler ${siparis.ad.trim()}! "${urun.ad}" siparişin alındı; seni telefonla arayıp ödeme ve teslimatı netleştireceğiz.` });
+    setSiparisDurum({ hata: '', tamam: '', bekliyor: true });
+    if (!(await siparisGonder(siparisVerisi(siparis, urun)))) {
+      setSiparisDurum({ hata: 'Siparişin şu an gönderilemedi. Biraz sonra yeniden dene ya da WhatsApp\'tan yaz.', tamam: '', bekliyor: false });
+      return;
+    }
+    setSiparisDurum({ hata: '', bekliyor: false, tamam: `Teşekkürler ${siparis.ad.trim()}! "${urun.ad}" siparişin alındı; seni telefonla arayıp ödeme ve teslimatı netleştireceğiz.` });
     setSiparis({ ad: '', urun: ilk(STOKTA), telefon: '' });
   };
 
@@ -59,7 +63,7 @@ export default function Formlar() {
         <p className="lead">Bilgilerini bırak, seni arayalım. Tükenen bir ürünü istiyorsan stoğa girince haber verelim.</p>
       </div>
       <div className="formlar">
-        <form className="formlar__kart" onSubmit={siparisGonder} onChange={sifirla(setSiparisDurum)}>
+        <form className="formlar__kart" onSubmit={siparisYolla} onChange={sifirla(setSiparisDurum)}>
           <h3 className="formlar__baslik">Sipariş ver</h3>
           <label className="alan">Ad soyad
             <input type="text" required maxLength={80} autoComplete="name" value={siparis.ad} onChange={degis(setSiparis, 'ad')} />
@@ -74,7 +78,7 @@ export default function Formlar() {
           </label>
           {siparisDurum.hata && <p className="uyelik__hata" role="alert">{siparisDurum.hata}</p>}
           {siparisDurum.tamam && <p className="uyelik__tamam" role="status">{siparisDurum.tamam}</p>}
-          <button type="submit" className="btn btn--gold btn--big">Siparişi gönder</button>
+          <button type="submit" className="btn btn--gold btn--big" disabled={siparisDurum.bekliyor}>{siparisDurum.bekliyor ? 'Gönderiliyor…' : 'Siparişi gönder'}</button>
         </form>
 
         {TUKENEN.length > 0 && (

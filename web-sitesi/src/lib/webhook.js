@@ -18,11 +18,30 @@ const yeniKimlik = () => {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 };
 
+const zarf = (olay, veri) => JSON.stringify({
+  surum: '1.0', olay, kimlik: yeniKimlik(), zaman: turkiyeZamani(), kaynak: 'web-sitesi', veri,
+});
+
+// Sipariş formu: önce /api/token'dan kısa ömürlü JWT alınır, sonra Authorization başlığıyla gönderilir.
+// Başarılıysa true döner (form ekranda yalnız o zaman "alındı" der).
+export async function siparisGonder(veri) {
+  try {
+    const t = await fetch('/api/token', { method: 'POST' });
+    if (!t.ok) return false;
+    const { jeton } = await t.json();
+    const r = await fetch(ADRES, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain', Authorization: `Bearer ${jeton}` },
+      body: zarf('siparis.verildi', veri),
+    });
+    return r.ok;
+  } catch {
+    return false;
+  }
+}
+
 export function webhookGonder(olay, veri) {
   try {
-    const govde = JSON.stringify({
-      surum: '1.0', olay, kimlik: yeniKimlik(), zaman: turkiyeZamani(), kaynak: 'web-sitesi', veri,
-    });
+    const govde = zarf(olay, veri);
     // text/plain: tarayıcı ek izin (CORS ön kontrolü) istemez; sendBeacon sayfa WhatsApp'a geçerken de gönderir.
     const gitti = navigator.sendBeacon?.(ADRES, new Blob([govde], { type: 'text/plain' }));
     if (!gitti) fetch(ADRES, { method: 'POST', body: govde, keepalive: true, mode: 'no-cors' });

@@ -1,6 +1,8 @@
 // Webhook aracısı (Vercel API route): tarayıcı yalnız /api/webhook'a yazar; gerçek adres ve sır sunucuda kalır.
 // Ortam değişkenleri (Vercel → Settings → Environment Variables veya yerelde .env): WEBHOOK_URL, WEBHOOK_SECRET (isteğe bağlı).
 // WEBHOOK_URL yoksa hiçbir yere veri gönderilmez (204 döner).
+import { bearer, hizSiniri, jetonGecerli } from './_guvenlik.js';
+
 const OLAYLAR = new Set(['soru.gonderildi', 'sepet.gonderildi', 'bileklik.tasarlandi', 'siparis.verildi', 'stok.bildirimi_istendi']);
 const TELEFON = /^[0-9+()\s-]{10,20}$/;
 const EPOSTA = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,11 +46,18 @@ export default async function handler(req, res) {
   const origin = req.headers.origin;
   if (origin && !kendiSitemiz(req, origin)) return res.status(403).end();
 
-  const adres = process.env.WEBHOOK_URL;
-  if (!adres) return res.status(204).end();
+  // Hız sınırı: IP başına dakikada 10 istek (_guvenlik.js).
+  const h = hizSiniri(req, 'webhook');
+  if (!h.izinli) return res.status(429).setHeader('Retry-After', String(h.bekle)).end();
 
   const zarf = govdeyiOku(req);
   if (!zarf) return res.status(400).end();
+  // Sipariş formu JWT ister (Authorization: Bearer <jeton>, /api/token'dan).
+  if (zarf.olay === 'siparis.verildi' && !jetonGecerli(bearer(req), process.env.JWT_SECRET)) return res.status(401).end();
+
+  // Adres tanımlı değilse hiçbir yere veri gönderilmez (doğrulamalar yine de çalışır).
+  const adres = process.env.WEBHOOK_URL;
+  if (!adres) return res.status(204).end();
 
   try {
     const basliklar = { 'Content-Type': 'application/json' };
