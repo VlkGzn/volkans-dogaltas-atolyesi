@@ -14,3 +14,7 @@ yeni-resimler/
 
 # macOS
 .DS_Store
+
+# Vercel yerel bağlantısı
+.vercel/
+web-sitesi/.vercel/
