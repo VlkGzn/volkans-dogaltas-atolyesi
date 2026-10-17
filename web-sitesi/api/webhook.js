@@ -2,6 +2,8 @@
 // Ortam değişkenleri (Vercel → Settings → Environment Variables veya yerelde .env): WEBHOOK_URL, WEBHOOK_SECRET (isteğe bağlı).
 // WEBHOOK_URL yoksa hiçbir yere veri gönderilmez (204 döner).
 import { bearer, hizSiniri, jetonGecerli } from './_guvenlik.js';
+import { URUNLER } from '../src/data/urunler.js';
+import { urunFiyati } from '../src/data/site.js';
 
 const OLAYLAR = new Set(['soru.gonderildi', 'sepet.gonderildi', 'bileklik.tasarlandi', 'siparis.verildi', 'stok.bildirimi_istendi']);
 const TELEFON = /^[0-9+()\s-]{10,20}$/;
@@ -12,10 +14,21 @@ const metin = (v, en) => typeof v === 'string' && v.trim().length > 0 && v.lengt
 // Kişi bilgisi içeren iki form olayı açık rıza kaydı olmadan kabul edilmez.
 const rizaVar = (v) => v.riza === true && metin(v.riza_metni, 40) && metin(v.riza_zamani, 40);
 
+// Ürün bilgisi istemciden alınmaz: yalnız urun_id okunur, ad/kategori/fiyat sunucudaki listeden yazılır.
+// Tükenen ürüne sipariş, stoktaki ürüne stok bildirimi reddedilir.
+function urunuDogrula(o) {
+  const urun = URUNLER.find((u) => u.id === o.veri.urun_id);
+  if (!urun || Boolean(urun.tukendi) !== (o.olay === 'stok.bildirimi_istendi')) return false;
+  Object.assign(o.veri, { urun_adi: urun.ad, kategori: urun.kategori, cinsiyet: urun.cinsiyet });
+  if (o.olay === 'siparis.verildi') o.veri.fiyat_metni = urunFiyati(urun);
+  else delete o.veri.fiyat_metni;
+  return true;
+}
+
 function formGecerli(o) {
   const v = o.veri;
-  if (o.olay === 'siparis.verildi') return metin(v.musteri_adi, 80) && metin(v.urun_id, 80) && TELEFON.test(v.telefon ?? '') && rizaVar(v);
-  if (o.olay === 'stok.bildirimi_istendi') return metin(v.musteri_adi, 80) && metin(v.urun_id, 80) && EPOSTA.test(v.eposta ?? '') && v.eposta.length <= 120 && rizaVar(v);
+  if (o.olay === 'siparis.verildi') return metin(v.musteri_adi, 80) && metin(v.urun_id, 80) && TELEFON.test(v.telefon ?? '') && rizaVar(v) && urunuDogrula(o);
+  if (o.olay === 'stok.bildirimi_istendi') return metin(v.musteri_adi, 80) && metin(v.urun_id, 80) && EPOSTA.test(v.eposta ?? '') && v.eposta.length <= 120 && rizaVar(v) && urunuDogrula(o);
   return true;
 }
 const EN_FAZLA_BAYT = 20 * 1024;
