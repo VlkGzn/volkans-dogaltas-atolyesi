@@ -9,9 +9,9 @@ export default function Giris() {
           className="intro__card in-l"
           katmanlar={[
             { video: true, src: './video/tesbih-cekiliyor.mp4', poster: './video/tesbih-cekiliyor.jpg', alt: 'Atölyemizin yeşim tesbihi, taneleri çekilirken', origin: '50% 50%' },
-            { src: foto('29-kaplan-gozu-oval-yuzuk.jpg'), alt: 'Erkek elinde atölyemizin kaplan gözü oval yüzüğü', origin: '55% 50%', konum: '50% 48%' },
+            { src: foto('09-kaplan-gozu-yosun-akik-seti.jpg'), alt: 'Atölyemizin kaplan gözü ve yosun akik bileklik seti', origin: '50% 50%', konum: '50% 50%' },
           ]}
-          etiketler={['Erkek · Tesbih', 'Erkek · Yüzük']}
+          etiketler={['Erkek · Tesbih', 'Erkek · Bileklik']}
         />
         <div className="intro__text in-u">
           <div className="eyebrow">El yapımı · Doğal taş</div>
@@ -25,11 +25,10 @@ export default function Giris() {
         <GecisKarti
           className="intro__card in-r"
           katmanlar={[
-            { src: foto('33-renkli-tas-kolye-2.jpg'), alt: 'Boyunda atölyemizin renkli doğal taş kolyesi', origin: '50% 32%', konum: '50% 22%' },
-            { src: foto('36-mavi-tas-kolye-2.jpg'), alt: 'Boyunda atölyemizin mavi taşlı kolyesi', origin: '50% 42%', konum: '50% 26%' },
+            { src: foto('12-turkuaz-deniz-kabugu-kolye.jpg'), alt: 'Atölyemizin turkuaz ve deniz kabuğu kolyesi', origin: '50% 50%', konum: '50% 50%' },
             { src: foto('04-malakit-yuzuk.jpg'), alt: 'Atölyemizin iridyum malakit kadın yüzüğü', origin: '50% 50%', konum: '50% 50%' },
           ]}
-          etiketler={['Kadın · Renkli Taş Kolye', 'Kadın · Mavi Taş Kolye', 'Kadın · Yüzük']}
+          etiketler={['Kadın · Kolye', 'Kadın · Yüzük']}
         />
       </div>
     </section>

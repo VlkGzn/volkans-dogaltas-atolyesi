@@ -32,8 +32,7 @@ export default function Kategoriler({ onFiltre }) {
       <div className="cats">
         <a href="#koleksiyon" className="cat" onClick={() => onFiltre('kadin')}>
           <GecisKarti className="cat__media" katmanlar={[
-            { src: foto('33-renkli-tas-kolye-2.jpg'), alt: 'Boyunda atölyemizin renkli doğal taş kolyesi', origin: '50% 32%', konum: '50% 22%' },
-            { src: foto('36-mavi-tas-kolye-2.jpg'), alt: 'Boyunda atölyemizin mavi taşlı kolyesi', origin: '50% 42%', konum: '50% 26%' },
+            { src: foto('12-turkuaz-deniz-kabugu-kolye.jpg'), alt: 'Atölyemizin turkuaz ve deniz kabuğu kolyesi', origin: '50% 50%', konum: '50% 50%' },
             { src: foto('04-malakit-yuzuk.jpg'), alt: 'Atölyemizin iridyum malakit kadın yüzüğü', origin: '50% 50%', konum: '50% 50%' },
           ]} />
           <KartAlti baslik="Kadın" alt="Kolye · Bileklik · Yüzük" eylem="Keşfet →" />
@@ -41,7 +40,7 @@ export default function Kategoriler({ onFiltre }) {
         <a href="#koleksiyon" className="cat" onClick={() => onFiltre('erkek')}>
           <GecisKarti className="cat__media" katmanlar={[
             { src: foto('02-lapis-lazuli-tesbih.jpg'), alt: 'Atölyemizin lapis lazuli tesbihi', origin: '55% 50%' },
-            { src: foto('29-kaplan-gozu-oval-yuzuk.jpg'), alt: 'Erkek elinde atölyemizin kaplan gözü oval yüzüğü', origin: '55% 50%', konum: '50% 48%' },
+            { src: foto('09-kaplan-gozu-yosun-akik-seti.jpg'), alt: 'Atölyemizin kaplan gözü ve yosun akik bileklik seti', origin: '50% 50%', konum: '50% 50%' },
           ]} />
           <KartAlti baslik="Erkek" alt="Tesbih · Bileklik · Yüzük" eylem="Keşfet →" />
         </a>

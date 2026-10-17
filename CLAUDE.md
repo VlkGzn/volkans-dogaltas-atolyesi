@@ -56,12 +56,13 @@ web-sitesi/                      React + Vite projesi (TEK KAYNAK)
   src/styles.css                 Tüm stiller (renk değişkenleri :root'ta)
   src/data/urunler.js            35 ürün (4'ü fotoğrafsız) (id, cinsiyet, kategori, ad, aciklama, fotograflar, yeni)
   src/data/site.js               İletişim, waLink(), fiyatlar, kategori adları, süzgeçler, vitrin, bileklik taşları
-  src/lib/webhook.js             webhookGonder + soruVerisi/bileklikVerisi (AtölyeKart v1; adres .env VITE_WEBHOOK_URL)
+  src/lib/webhook.js             webhookGonder + soruVerisi/bileklikVerisi (AtölyeKart v1; tarayıcı /api/webhook'a yazar)
+  api/webhook.js                 Vercel API route: doğrular (olay, boyut, origin), WEBHOOK_URL + WEBHOOK_SECRET ile Make'e iletir (2026-10-17)
   src/lib/uyelik.js              useUyelik (Supabase Auth): uyeOl/girisYap/sifreSifirla/cikisYap; .env VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY
   src/data/kvkk.js               KVKK aydınlatma metni TASLAĞI (hukukçuya kontrol ettirilmeli)
   src/lib/sepet.js               useSepet: [{id, adet}] (localStorage, sekmeler arası eşitlenir); ekle/azalt/sil/bosalt/adet
   src/lib/favoriler.js           useFavoriler: kalp ile işaretlenen ürünler (localStorage, try/catch, sekmeler arası eşitlenir)
-  .env.example                   VITE_WEBHOOK_URL= (doldurulup .env olarak kaydedilir; .env git'e girmez)
+  .env.example                   WEBHOOK_URL=, WEBHOOK_SECRET= (sunucu ayarı; Vercel Environment Variables veya yerel .env; git'e girmez)
   src/components/
     ProductImage.jsx             Oranlı ürün fotoğrafı; onOpen verilirse büyütme düğmesi; çoklu foto rozeti
     ProductCard.jsx              Fotoğraf + kalp (favori) + ad + kategori + fiyat + "Sepete ekle" + "WhatsApp'tan sor" (soru.gonderildi webhook'u)
@@ -158,7 +159,7 @@ Açık bulgular: çerçeveleme koruması yok (GitHub Pages), webhook/Supabase ku
 - Gönderilen olaylar: `sepet.gonderildi` (sepet paneli), `soru.gonderildi` (kart: bolum=koleksiyon|atolyeden-yeni, büyük fotoğraf: buyuk-fotograf) ve
   `bileklik.tasarlandi` (en az 1 taş seçiliyken). Format: skill references/webhook-formati.md.
 - `web-sitesi/.env` yokken/boşken derleyici gönderim kodunu tamamen çıkarır (site hiçbir yere veri göndermez).
-- Kurulum: kullanıcı Make'te "Custom webhook" adresi verir → `.env`: `VITE_WEBHOOK_URL=<adres>` → `npm run build` → önizlemeyi yayınla.
+- Kurulum: kullanıcı Make'te "Custom webhook" adresi verir → Vercel'de `WEBHOOK_URL=<adres>` (+ isteğe bağlı `WEBHOOK_SECRET`) ekle → yeniden dağıt. (2026-10-17: artık sunucuda; VITE_WEBHOOK_URL kaldırıldı.)
   Gövde text/plain JSON gelir; Make'te gerekirse "Parse JSON" modülü eklenir.
 - Uçtan uca test (yerel yakalama sunucusu + ayrı test derlemesi) geçti: 3 mesaj, doğrulayıcı TAMAM.
 
@@ -205,3 +206,6 @@ Açık bulgular: çerçeveleme koruması yok (GitHub Pages), webhook/Supabase ku
 - Web adresi yok (alan adı alınırsa siteye ve karta ekle).
 - Kullanıcı kendi ürünleriyle kısa videolar (bilekte bileklik, boyunda kolye, elde tesbih) çekerse girişe yerleştir.
 - Öneri bekliyor: aynı tesbih çekilme animasyonu lacivert ve sarı tesbihler için; vitrinin ilk görseli girişle aynı (yeşim tesbih).
+
+- 2026-10-17: `yeni-resimler/` (ŞİFAMTAŞ) kaynaklı 10 ürünün (27–36) fotoğrafları izin belirsizliği nedeniyle siteden kaldırıldı (dosyalar silindi, ürünler "Fotoğraf yakında" kartı).
+  Giriş/Kategoriler açılış görselleri kendi fotoğraflarımızla değiştirildi. Kendi çekimler gelince `urunler.js` içinde `fotograflar` doldurulur.
