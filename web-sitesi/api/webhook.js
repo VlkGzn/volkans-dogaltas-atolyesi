@@ -1,7 +1,18 @@
 // Webhook aracısı (Vercel API route): tarayıcı yalnız /api/webhook'a yazar; gerçek adres ve sır sunucuda kalır.
 // Ortam değişkenleri (Vercel → Settings → Environment Variables veya yerelde .env): WEBHOOK_URL, WEBHOOK_SECRET (isteğe bağlı).
 // WEBHOOK_URL yoksa hiçbir yere veri gönderilmez (204 döner).
-const OLAYLAR = new Set(['soru.gonderildi', 'sepet.gonderildi', 'bileklik.tasarlandi']);
+const OLAYLAR = new Set(['soru.gonderildi', 'sepet.gonderildi', 'bileklik.tasarlandi', 'siparis.verildi', 'stok.bildirimi_istendi']);
+const TELEFON = /^[0-9+()\s-]{10,20}$/;
+const EPOSTA = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const metin = (v, en) => typeof v === 'string' && v.trim().length > 0 && v.length <= en;
+
+// Form olaylarında kişi bilgisi sunucuda da doğrulanır (tarayıcı denetimi tek başına yetmez).
+function formGecerli(o) {
+  const v = o.veri;
+  if (o.olay === 'siparis.verildi') return metin(v.musteri_adi, 80) && metin(v.urun_id, 80) && TELEFON.test(v.telefon ?? '');
+  if (o.olay === 'stok.bildirimi_istendi') return metin(v.musteri_adi, 80) && metin(v.urun_id, 80) && EPOSTA.test(v.eposta ?? '') && v.eposta.length <= 120;
+  return true;
+}
 const EN_FAZLA_BAYT = 20 * 1024;
 
 const sunucuOrigin = (req) => `https://${req.headers['x-forwarded-host'] || req.headers.host}`;
@@ -13,7 +24,7 @@ function govdeyiOku(req) {
     const o = JSON.parse(ham);
     const gecerli = o && typeof o === 'object' && o.surum === '1.0' && o.kaynak === 'web-sitesi'
       && OLAYLAR.has(o.olay) && o.veri && typeof o.veri === 'object';
-    return gecerli ? o : null;
+    return gecerli && formGecerli(o) ? o : null;
   } catch {
     return null;
   }

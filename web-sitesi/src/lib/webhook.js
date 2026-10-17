@@ -70,3 +70,26 @@ export const sepetVerisi = (satirlar, toplam, mesaj) => ({
   kanal: 'whatsapp',
   mesaj,
 });
+
+// form: { ad, telefon } — urun: urunler.js kaydı
+export const siparisVerisi = (form, urun) => ({
+  musteri_adi: form.ad.trim(),
+  telefon: form.telefon.trim(),
+  urun_id: urun.id,
+  urun_adi: urun.ad,
+  kategori: urun.kategori,
+  cinsiyet: urun.cinsiyet,
+  fiyat_metni: urunFiyati(urun),
+  kanal: 'form',
+});
+
+// form: { ad, eposta } — urun: tükenen ürün
+export const stokVerisi = (form, urun) => ({
+  musteri_adi: form.ad.trim(),
+  eposta: form.eposta.trim(),
+  urun_id: urun.id,
+  urun_adi: urun.ad,
+  kategori: urun.kategori,
+  cinsiyet: urun.cinsiyet,
+  kanal: 'form',
+});

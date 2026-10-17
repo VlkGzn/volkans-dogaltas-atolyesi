@@ -6,6 +6,7 @@ import Kategoriler, { Ozellikler } from './components/Kategoriler.jsx';
 import Koleksiyon from './components/Koleksiyon.jsx';
 import BileklikTasarla from './components/BileklikTasarla.jsx';
 import AtolyedenYeni from './components/AtolyedenYeni.jsx';
+import Formlar from './components/Formlar.jsx';
 import Footer from './components/Footer.jsx';
 import Lightbox from './components/Lightbox.jsx';
 import { useFavoriler } from './lib/favoriler.js';
@@ -41,6 +42,7 @@ export default function App() {
       <Koleksiyon filtre={filtre} setFiltre={setFiltre} onOpen={setAcikUrun} favoriler={favoriler} onFavori={favoriDegistir} onSepeteEkle={sepet.ekle} />
       <BileklikTasarla />
       <AtolyedenYeni onOpen={setAcikUrun} onTumu={() => setFiltre('tumu')} favoriler={favoriler} onFavori={favoriDegistir} onSepeteEkle={sepet.ekle} />
+      <Formlar />
       <Footer onFiltre={setFiltre} />
       {acikUrun && <Lightbox key={acikUrun.id} urun={acikUrun} onClose={kapat} onSepeteEkle={sepet.ekle} />}
       {sepetAcik && <Sepet sepet={sepet} onClose={sepetiKapat} />}

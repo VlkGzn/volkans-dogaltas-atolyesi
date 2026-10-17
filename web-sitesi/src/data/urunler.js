@@ -1,5 +1,6 @@
 // Atölyenin ürünleri — sitedeki tüm ürün kartları bu listeden üretilir.
 // fotograflar: public/img/koleksiyon/ altındaki dosya adları (ilki kapak fotoğrafı); boş [] = "Fotoğraf yakında" kartı.
+// tukendi: true olan ürün stokta yoktur: sepete eklenmez, kartta "Stok bildirimi iste" çıkar.
 // yeni: true olanlar "Atölyeden yeni" bölümünde de gösterilir.
 // fiyat: isteğe bağlı, ürüne özel fiyat (TL, sayı: 7500); yoksa kategori fiyatı (site.js FIYAT) gösterilir.
 export const URUNLER = [
@@ -37,5 +38,5 @@ export const URUNLER = [
   { id: 'havlit-bileklik', cinsiyet: 'kadin', kategori: 'bileklik', ad: 'Havlit Bileklik', aciklama: 'Beyaz damarlı doğal taş', fotograflar: [] },
   { id: 'siyah-akik-bileklik', cinsiyet: 'erkek', kategori: 'bileklik', ad: 'Siyah Akik Bileklik', aciklama: 'Parlak siyah doğal taş', fotograflar: [] },
   { id: 'kehribar-bileklik', cinsiyet: 'kadin', kategori: 'bileklik', ad: 'Kehribar Bileklik', aciklama: 'Doğal kehribar', fotograflar: [] },
-  { id: 'zebercet-bileklik', cinsiyet: 'kadin', kategori: 'bileklik', ad: 'Zebercet Bileklik', aciklama: 'Yeşil doğal taş', fotograflar: [] },
+  { id: 'zebercet-bileklik', cinsiyet: 'kadin', kategori: 'bileklik', ad: 'Zebercet Bileklik', aciklama: 'Yeşil doğal taş', fotograflar: [], tukendi: true },
 ];

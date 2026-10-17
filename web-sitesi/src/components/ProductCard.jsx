@@ -41,6 +41,14 @@ export default function ProductCard({ urun, onOpen, bolum = 'koleksiyon', favori
         </div>
         <div className="product-card__price">{urunFiyati(urun)}</div>
       </div>
+      {urun.tukendi ? (
+        <div className="product-card__actions product-card__actions--tek">
+          <a className="btn btn--outline btn--small" href="#stok-bildirimi"
+            onClick={() => window.dispatchEvent(new CustomEvent('stok-bildirimi-sec', { detail: urun.id }))}>
+            Tükendi · Stok bildirimi iste
+          </a>
+        </div>
+      ) : (
       <div className={onSepeteEkle ? 'product-card__actions' : 'product-card__actions product-card__actions--tek'}>
         {onSepeteEkle && (
           <>
@@ -58,6 +66,7 @@ export default function ProductCard({ urun, onOpen, bolum = 'koleksiyon', favori
           <WhatsAppLogo size={22} />
         </a>
       </div>
+      )}
     </article>
   );
 }
