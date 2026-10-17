@@ -15,7 +15,14 @@ function formGecerli(o) {
 }
 const EN_FAZLA_BAYT = 20 * 1024;
 
-const sunucuOrigin = (req) => `https://${req.headers['x-forwarded-host'] || req.headers.host}`;
+// Origin'in sunucu adı (host) bizim adresimizle aynı mı? http/https ayrımı yapılmaz (yerel denemede http olur).
+function kendiSitemiz(req, origin) {
+  try {
+    return new URL(origin).host === (req.headers['x-forwarded-host'] || req.headers.host);
+  } catch {
+    return false;
+  }
+}
 
 function govdeyiOku(req) {
   const ham = typeof req.body === 'string' ? req.body : JSON.stringify(req.body ?? null);
@@ -35,7 +42,7 @@ export default async function handler(req, res) {
 
   // Başka bir siteden gelen istekleri reddet (Origin başlığı varsa kendi adresimiz olmalı).
   const origin = req.headers.origin;
-  if (origin && origin !== sunucuOrigin(req)) return res.status(403).end();
+  if (origin && !kendiSitemiz(req, origin)) return res.status(403).end();
 
   const adres = process.env.WEBHOOK_URL;
   if (!adres) return res.status(204).end();

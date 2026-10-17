@@ -6,6 +6,9 @@ const STOKTA = URUNLER.filter((u) => !u.tukendi);
 const TUKENEN = URUNLER.filter((u) => u.tukendi);
 const ilk = (liste) => liste[0]?.id ?? '';
 const telefonRakamlari = (t) => t.replace(/\D/g, '');
+// Sunucudaki (api/webhook.js) kurallarla aynı olmalı; yoksa müşteri onay görür ama kayıt reddedilir.
+const TELEFON = /^[0-9+()\s-]{10,20}$/;
+const EPOSTA = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Sipariş ver (ad, ürün, telefon) ve Stok bildirimi iste (ad, e-posta, tükenen ürün).
 // İkisi de ekranda onay gösterir ve webhook'a (/api/webhook) olay gönderir.
@@ -13,7 +16,7 @@ export default function Formlar() {
   const [siparis, setSiparis] = useState({ ad: '', urun: ilk(STOKTA), telefon: '' });
   const [siparisDurum, setSiparisDurum] = useState({ hata: '', tamam: '' });
   const [stok, setStok] = useState({ ad: '', urun: ilk(TUKENEN), eposta: '' });
-  const [stokDurum, setStokDurum] = useState({ tamam: '' });
+  const [stokDurum, setStokDurum] = useState({ hata: '', tamam: '' });
 
   // Tükenen ürün kartındaki "Stok bildirimi iste" düğmesi ürünü bu forma seçtirir.
   useEffect(() => {
@@ -24,8 +27,8 @@ export default function Formlar() {
 
   const siparisGonder = (e) => {
     e.preventDefault();
-    if (telefonRakamlari(siparis.telefon).length < 10) {
-      setSiparisDurum({ hata: 'Telefon numarasını alan koduyla birlikte yazın (ör. 0532 000 00 00).', tamam: '' });
+    if (!TELEFON.test(siparis.telefon.trim()) || telefonRakamlari(siparis.telefon).length < 10) {
+      setSiparisDurum({ hata: 'Telefonu yalnız rakamla, alan koduyla yazın (ör. 0532 000 00 00).', tamam: '' });
       return;
     }
     const urun = URUNLER.find((u) => u.id === siparis.urun);
@@ -36,9 +39,13 @@ export default function Formlar() {
 
   const stokGonder = (e) => {
     e.preventDefault();
+    if (!EPOSTA.test(stok.eposta.trim())) {
+      setStokDurum({ hata: 'E-posta adresini tam yazın (ör. ad@ornek.com).', tamam: '' });
+      return;
+    }
     const urun = URUNLER.find((u) => u.id === stok.urun);
     webhookGonder('stok.bildirimi_istendi', stokVerisi(stok, urun));
-    setStokDurum({ tamam: `Teşekkürler ${stok.ad.trim()}! "${urun.ad}" tekrar stoğa girdiğinde ${stok.eposta.trim()} adresine haber vereceğiz.` });
+    setStokDurum({ hata: '', tamam: `Teşekkürler ${stok.ad.trim()}! "${urun.ad}" tekrar stoğa girdiğinde ${stok.eposta.trim()} adresine haber vereceğiz.` });
     setStok({ ad: '', urun: ilk(TUKENEN), eposta: '' });
   };
 
@@ -84,6 +91,7 @@ export default function Formlar() {
             <label className="alan">E-posta
               <input type="email" required maxLength={120} autoComplete="email" value={stok.eposta} onChange={degis(setStok, 'eposta')} />
             </label>
+            {stokDurum.hata && <p className="uyelik__hata" role="alert">{stokDurum.hata}</p>}
             {stokDurum.tamam && <p className="uyelik__tamam" role="status">{stokDurum.tamam}</p>}
             <button type="submit" className="btn btn--gold btn--big">Haber ver</button>
           </form>
