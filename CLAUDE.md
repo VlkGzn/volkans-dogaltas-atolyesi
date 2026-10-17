@@ -209,3 +209,9 @@ Açık bulgular: çerçeveleme koruması yok (GitHub Pages), webhook/Supabase ku
 
 - 2026-10-17: `yeni-resimler/` (ŞİFAMTAŞ) kaynaklı 10 ürünün (27–36) fotoğrafları izin belirsizliği nedeniyle siteden kaldırıldı (dosyalar silindi, ürünler "Fotoğraf yakında" kartı).
   Giriş/Kategoriler açılış görselleri kendi fotoğraflarımızla değiştirildi. Kendi çekimler gelince `urunler.js` içinde `fotograflar` doldurulur.
+
+## Mobil (Expo) — 2026-10-17
+- `expo/` klasörü: Expo SDK 58 + React Native 0.88, ek paket yok (yalnız çekirdek bileşenler). Aynı API'yi kullanır: `/api/token`, `/api/webhook`.
+- `expo/senkronla.mjs` web'deki `src/data/{urunler,site,gizlilik}.js` dosyalarını `expo/veri/` içine kopyalar (`npm start` önce bunu çalıştırır). Veri tek kaynaktan: web-sitesi.
+- API adresi: `EXPO_PUBLIC_API_URL` (yoksa canlı Vercel adresi). İstemcide secret yok.
+- Çalıştırma: `cd expo && npm start`, telefonda Expo Go ile QR okut (telefon ve bilgisayar aynı Wi-Fi'de).

@@ -54,7 +54,7 @@ Tarih: 17 Ekim 2026 · Hafta 2 · Şablon: Ders 3 `GUVENLIK-KONTROL-LISTESI.md` 
 - [ ] Canlı URL'de iki form denendi, webhook alıcısında iki event göründü — **henüz yapılmadı:** `WEBHOOK_URL` yok ve son kod henüz canlıya alınmadı. Yerelde tarayıcıyla (yerel alıcı) iki event göründü
 - [ ] 11 istek arka arkaya gönderilip 429 alındığı canlıda doğrulandı — yerelde doğrulandı (11. istek 429); canlıda bekliyor
 - [ ] Geçersiz e-posta ile 400 ve alan hatası canlıda doğrulandı — yerelde: `a@b` formda uyarı alır, sunucuya doğrudan gelirse 400
-- (n/a) Expo Go: bu projede mobil port yok
+- [ ] Expo Go ile telefondan iki form denendi — mobil port hazır (`expo/`), paket iOS+Android için derlendi, API istemcisi 12 testle doğrulandı; telefonda deneme kullanıcıda (önce son kodun canlıya alınması gerekir)
 
 ## Özet
 - Hazır: secret yönetimi, sunucu doğrulaması, JWT, hız sınırı, KVKK rızası, görsel haklarının düzeltilmesi.
