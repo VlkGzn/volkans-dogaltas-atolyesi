@@ -1,9 +1,10 @@
 // Webhook gönderimi — AtölyeKart v1 zarfı (bkz. .claude/skills/atolyekart-standartlari/references/webhook-formati.md).
-// Adres web-sitesi/.env içindeki VITE_WEBHOOK_URL'den okunur; boşsa hiçbir şey gönderilmez.
+// Tarayıcı yalnız kendi sitesindeki /api/webhook'a yazar (web-sitesi/api/webhook.js); gerçek adres ve sır sunucuda kalır.
+// Sunucuda WEBHOOK_URL tanımlı değilse hiçbir yere veri gitmez.
 // Webhook hatası müşterinin WhatsApp'a geçmesini asla engellemez.
 import { FIYAT, taneOzeti, tl, urunFiyatSayi, urunFiyati, urunMesaji } from '../data/site.js';
 
-const ADRES = import.meta.env.VITE_WEBHOOK_URL;
+const ADRES = '/api/webhook';
 
 const turkiyeZamani = () =>
   new Date(Date.now() + 3 * 3600 * 1000).toISOString().replace(/\.\d{3}Z$/, '+03:00');
@@ -18,7 +19,6 @@ const yeniKimlik = () => {
 };
 
 export function webhookGonder(olay, veri) {
-  if (!ADRES) return;
   try {
     const govde = JSON.stringify({
       surum: '1.0', olay, kimlik: yeniKimlik(), zaman: turkiyeZamani(), kaynak: 'web-sitesi', veri,

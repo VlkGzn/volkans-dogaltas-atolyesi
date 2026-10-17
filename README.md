@@ -18,7 +18,7 @@ Site **React 19 + Vite** ile yazılmıştır; siparişler WhatsApp üzerinden al
 - **Üyelik:** Giriş yap / Üye ol / Şifremi unuttum (Supabase Auth) ve KVKK onayı. Supabase bilgileri girilmediyse form yerine
   "kuruluyor" bilgisi gösterilir.
 - **Webhook:** Soru, bileklik tasarımı ve sepet siparişleri Make/Zapier/n8n'e (ör. Google Sheets) gönderilebilir; adres boşsa
-  hiçbir veri gönderilmez. Format: `.claude/skills/atolyekart-standartlari/references/webhook-formati.md`.
+  hiçbir veri gönderilmez. Tarayıcı yalnız `/api/webhook`'a yazar (`web-sitesi/api/webhook.js`); gerçek adres sunucuda kalır. Format: `.claude/skills/atolyekart-standartlari/references/webhook-formati.md`.
 - **Logo ve QR:** Tesbih halkası logosu, ortasında logo olan WhatsApp QR kodu (okunurluğu OpenCV ile doğrulandı).
 
 ## Çalıştırma
@@ -34,7 +34,7 @@ npm run build    # dist/index.html — çift tıklayınca da açılır (JS/CSS i
 
 | Değişken | Ne işe yarar |
 |---|---|
-| `VITE_WEBHOOK_URL` | Make / Zapier / n8n webhook adresi |
+| `WEBHOOK_URL`, `WEBHOOK_SECRET` | Make / Zapier / n8n adresi ve sırrı. **Sunucu ayarı** (Vercel Environment Variables); tarayıcıya gitmez. Site `/api/webhook` üzerinden gönderir |
 | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` | Üyelik (yalnız herkese açık *anon* anahtar; `service_role` asla) |
 
 ## Klasör yapısı

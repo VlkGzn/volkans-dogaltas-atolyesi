@@ -7,7 +7,7 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 
 // Güvenlik politikası (CSP, bkz. GUVENLIK.md): derleme bitince dist/index.html'e eklenir.
 // Gömülü JS'nin SHA-256 özeti yazılır; böylece sayfada yalnız bizim kodumuz çalışabilir.
-// Bağlantı izni yalnız .env'deki Supabase ve webhook adreslerine verilir.
+// Bağlantı izni yalnız kendi sitemize ('self', /api/webhook dahil) ve .env'deki Supabase adresine verilir.
 function guvenlikPolitikasi(env) {
   let dosya;
   return {
@@ -18,7 +18,7 @@ function guvenlikPolitikasi(env) {
       const html = readFileSync(dosya, 'utf8');
       const ozetler = [...html.matchAll(/<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)]
         .map((m) => `'sha256-${createHash('sha256').update(m[1]).digest('base64')}'`);
-      const baglanti = [env.VITE_SUPABASE_URL, env.VITE_WEBHOOK_URL]
+      const baglanti = [env.VITE_SUPABASE_URL]
         .filter(Boolean).map((u) => new URL(u).origin);
       const politika = [
         "default-src 'self'",

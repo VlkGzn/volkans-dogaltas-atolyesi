@@ -98,7 +98,7 @@ Gerekirse Cloudflare/Netlify gibi başlık eklenebilen bir barındırmaya geçil
 (`MAKS_ADET = 99`); ekleme/artırma da 99'da durur. `src/lib/favoriler.js` yalnız listedeki ürün kimliklerini kabul eder.
 Ürün listeden kaldırılırsa sepetteki/favorideki kaydı da kendiliğinden düşer.
 
-### C. Webhook adresi herkese açık olacak — orta (adres girilince)
+### C. Webhook adresi herkese açık olacak — ÇÖZÜLDÜ 2026-10-17 (adres artık /api/webhook arkasında, sunucuda)
 `VITE_WEBHOOK_URL` derlenen sayfanın içine yazılır; adresi gören herkes Make'e sahte bildirim gönderebilir.
 **Öneri:** Make senaryosunda `surum = "1.0"` ve `kaynak = "web-sitesi"` alanlarını süzün, işlem sınırı koyun. Bu adresi gizli
 bilgi gibi değil, herkese açık bir posta kutusu gibi düşünün.
